@@ -1,15 +1,11 @@
 package com.uniyaz.ui;
 
-import com.uniyaz.components.BodyLayout;
-import com.uniyaz.components.FooterLayout;
-import com.uniyaz.components.HeaderLayout;
 import com.uniyaz.components.MainLayout;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
-import sun.applet.Main;
 
 @Theme("mytheme")
 @Widgetset("com.uniyaz.MyAppWidgetset")

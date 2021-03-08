@@ -1,11 +1,11 @@
 package com.uniyaz.components;
 
 import com.uniyaz.ui.LayoutUI;
+import com.vaadin.data.Property;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class ContentLayout extends VerticalLayout {
     Label contentLabel;
@@ -21,61 +21,36 @@ public class ContentLayout extends VerticalLayout {
     }
 
     public void ContentLayoutFillBy(String type){
+
         TextField categoryName;
         TextField categoryID;
+
         setSizeFull();
         removeAllComponents();
 
-        Button save = new Button("Save");
-        save.setSizeUndefined();
-        save.addStyleName(ValoTheme.BUTTON_FRIENDLY);
-
-        Button delete = new Button("Delete");
-        delete.setSizeUndefined();
-        delete.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        MyButton saveButton = new MyButton("Save");
 
         switch(type){
+
             case("Add Category"):
+
                 categoryID = new TextField("Enter category ID");
                 addComponent(categoryID);
                 categoryName = new TextField("Enter category name");
                 addComponent(categoryName);
-                save.addClickListener(new Button.ClickListener() {
+                saveButton.addClickListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
                         Button button = new Button(categoryName.getValue());
                         button.setData(categoryID.getValue());
+                        button.addStyleName(ValoTheme.BUTTON_FRIENDLY);
                         ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().addComponent(button);
                     }
                 });
-                addComponent(save);
+                addComponent(saveButton);
                 break;
             case("Delete Category"):
-
-                ArrayList <String> componentData = new ArrayList<String>();
-                int count=((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().getComponentCount();
-                for(int i=0;i<count;i++){
-                    Component c=((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().getComponent(i);
-                    componentData.add(c.getCaption());
-                }
-
-                ComboBox componentComboBox = new ComboBox("Components",componentData);
-                addComponent(componentComboBox);
-
-                save.addClickListener(new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent clickEvent) {
-                    }
-                });
-
-                /*addComponent(delete);
-                int count=((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().getComponentCount();
-                System.out.println(count);
-                for(int i=0;i<count;i++){
-                    Component c=((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().getComponent(0);
-                    ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().removeComponent(c);
-                }*/
-                addComponent(delete);
+                deleteCategory();
                 break;
             case("Add Content"):
                 break;
@@ -83,6 +58,42 @@ public class ContentLayout extends VerticalLayout {
                 break;
         }
 
+    }
+
+    private void deleteCategory() {
+
+        MyButton deleteButton = new MyButton("Delete");
+
+        ComboBox componentComboBox = new ComboBox("Components");
+        ArrayList <Component> componentData = new ArrayList<Component>();
+        int count=((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().getComponentCount();
+        for(int i=0;i<count;i++){
+            Component c=((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().getComponent(i);
+            componentData.add(c);
+            componentComboBox.addItem(c);
+            componentComboBox.setItemCaption(c,c.getCaption());
+        }
+
+        componentComboBox.setNullSelectionAllowed(false);
+        addComponent(componentComboBox);
+
+
+        componentComboBox.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                Component temp= (Component) valueChangeEvent.getProperty().getValue();
+
+                deleteButton.addClickListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent clickEvent) {
+                        ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getSideBarLayout().removeComponent(temp);
+                        removeAllComponents();
+                        deleteCategory();
+                    }
+                });
+            }
+        });
+        addComponent(deleteButton);
     }
 
     public Label getContentLabel() {

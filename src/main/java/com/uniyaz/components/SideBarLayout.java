@@ -17,8 +17,7 @@ public class SideBarLayout extends VerticalLayout {
     }
 
     private void buildSideBarLayout() {
-        Button button1 = new Button("Anasayfa");
-        button1.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        MyButton button1 = new MyButton("Anasayfa");
         button1.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -28,8 +27,7 @@ public class SideBarLayout extends VerticalLayout {
         });
         addComponent(button1);
 
-        Button button2 = new Button("İletişim");
-        button2.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        MyButton button2 = new MyButton("İletişim");
         button2.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -38,8 +36,7 @@ public class SideBarLayout extends VerticalLayout {
         });
         addComponent(button2);
 
-        Button button3 = new Button("Hakkımızda");
-        button3.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        MyButton button3 = new MyButton("Hakkımızda");
         button3.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
