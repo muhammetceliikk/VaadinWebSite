@@ -4,10 +4,8 @@ import com.uniyaz.databaseService.DatabaseService;
 import com.uniyaz.domain.Category;
 import com.uniyaz.ui.LayoutUI;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,7 +26,7 @@ public class SideBarLayout extends VerticalLayout {
         DatabaseService databaseService = new DatabaseService();
         List<Category> categoryList = new ArrayList<Category>();
         try {
-            categoryList=databaseService.GetCategories();
+            categoryList=databaseService.getCategories();
             for (Category category : categoryList) {
                 MyButton myButton = new MyButton(category.getName());
                 myButton.setId(String.valueOf(category.getId()));

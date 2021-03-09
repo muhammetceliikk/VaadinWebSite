@@ -14,7 +14,8 @@ public class MainLayout extends VerticalLayout {
         buildMainLayout();
     }
 
-    private void buildMainLayout() {
+    public void buildMainLayout() {
+        removeAllComponents();
         headerLayout = new HeaderLayout();
         headerLayout.addStyleName("layout-with-border");
 

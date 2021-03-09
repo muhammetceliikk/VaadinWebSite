@@ -12,15 +12,15 @@ public class HeaderLayout extends HorizontalLayout {
         setSizeFull();
         createMenu();
 
-        MyButton homepage = new MyButton("HOMEPAGE");
-        homepage.addClickListener(new Button.ClickListener() {
+        MyButton homePage = new MyButton("HOMEPAGE");
+        homePage.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                ((LayoutUI) UI.getCurrent()).buildMainLayout();
+                ((LayoutUI) UI.getCurrent()).getMainLayout().buildMainLayout();
             }
         });
 
-        addComponent(homepage);
+        addComponent(homePage);
     }
 
 
