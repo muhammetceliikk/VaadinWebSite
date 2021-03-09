@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ContentLayout extends VerticalLayout {
-    TextField categoryName, categoryID, contentID, contentName;
+    TextField categoryName, contentName;
     RichTextArea contentText;
     DatabaseService databaseService = new DatabaseService();
     Content selectedContent;
-    ComboBox categoryComboBox, contentComboBox;
+    ComboBox categoryComboBox;
     Grid grid;
 
     public ContentLayout() {
