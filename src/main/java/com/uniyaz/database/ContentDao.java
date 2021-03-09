@@ -47,12 +47,9 @@ public class ContentDao {
             int id = resultSet.getInt(1);
             content.setId(id);
 
-            System.out.println(id);
-
             String name = resultSet.getString("NAME");
             content.setName(name);
 
-            System.out.println(name+"-----");
             String data = resultSet.getString("Data");
             content.setData(data);
 

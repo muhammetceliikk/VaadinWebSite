@@ -18,7 +18,7 @@ public class ContentLayout extends VerticalLayout {
     RichTextArea contentText;
     DatabaseService databaseService = new DatabaseService();
     Content tempContent;
-    ComboBox componentComboBox,contentComboBox;
+    ComboBox componentComboBox, contentComboBox;
 
     public ContentLayout() {
         setSizeFull();
@@ -55,6 +55,13 @@ public class ContentLayout extends VerticalLayout {
         componentComboBox.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                if (getComponentCount() > 2) {
+                    removeComponent(getComponent(2));
+                    removeComponent(getComponent(1));
+                }
+                if (getComponentCount() > 1) {
+                    removeComponent(getComponent(1));
+                }
                 Component temp = (Component) valueChangeEvent.getProperty().getValue();
                 ComboBox contentComboBox = getContentComboBox("Select content to delete", temp.getId());
                 addComponent(contentComboBox);
