@@ -78,6 +78,7 @@ public class ContentLayout extends VerticalLayout {
             }
         });
         addComponent(addButton);
+        
     }
 
     public void deleteCategory() {
