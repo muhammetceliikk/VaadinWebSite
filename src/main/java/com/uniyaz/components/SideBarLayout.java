@@ -1,11 +1,17 @@
 package com.uniyaz.components;
 
+import com.uniyaz.databaseService.DatabaseService;
+import com.uniyaz.domain.Category;
 import com.uniyaz.ui.LayoutUI;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SideBarLayout extends VerticalLayout {
     public SideBarLayout() {
@@ -16,33 +22,29 @@ public class SideBarLayout extends VerticalLayout {
         buildSideBarLayout();
     }
 
-    private void buildSideBarLayout() {
-        MyButton button1 = new MyButton("Anasayfa");
-        button1.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                Label label= new Label("Anasayfa");
-                ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().addComponent(label);
-            }
-        });
-        addComponent(button1);
+    public void buildSideBarLayout() {
 
-        MyButton button2 = new MyButton("İletişim");
-        button2.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().setContentLabel("İletişim");
+        removeAllComponents();
+        DatabaseService databaseService = new DatabaseService();
+        List<Category> categoryList = new ArrayList<Category>();
+        try {
+            categoryList=databaseService.GetCategories();
+            for (Category category : categoryList) {
+                MyButton myButton = new MyButton(category.getName());
+                myButton.setId(String.valueOf(category.getId()));
+                myButton.addClickListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent clickEvent) {
+                        ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().showContents(String.valueOf(category.getId()));
+                    }
+                });
+                addComponent(myButton);
             }
-        });
-        addComponent(button2);
 
-        MyButton button3 = new MyButton("Hakkımızda");
-        button3.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().setContentLabel("Hakkımızda");
-            }
-        });
-        addComponent(button3);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

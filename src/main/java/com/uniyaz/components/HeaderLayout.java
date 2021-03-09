@@ -11,6 +11,16 @@ public class HeaderLayout extends HorizontalLayout {
 
         setSizeFull();
         createMenu();
+
+        MyButton homepage = new MyButton("HOMEPAGE");
+        homepage.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                ((LayoutUI) UI.getCurrent()).buildMainLayout();
+            }
+        });
+
+        addComponent(homepage);
     }
 
 
@@ -30,6 +40,7 @@ public class HeaderLayout extends HorizontalLayout {
         MenuBar.MenuItem content = itemMenu.addItem("Content", null, null);
         MenuBar.MenuItem addContent = content.addItem("Add Content", null, mycommand);
         MenuBar.MenuItem deleteContent = content.addItem("Delete Content", null, mycommand);
+
 
     }
 }

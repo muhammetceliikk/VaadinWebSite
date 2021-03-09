@@ -18,7 +18,7 @@ public class LayoutUI extends UI {
         setContent(mainLayout);
     }
 
-    private void buildMainLayout() {
+    public void buildMainLayout() {
 
         final Page.Styles styles = Page.getCurrent().getStyles();
 
