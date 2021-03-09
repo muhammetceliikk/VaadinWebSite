@@ -16,9 +16,9 @@ public class MainLayout extends VerticalLayout {
 
     public void buildMainLayout() {
         removeAllComponents();
+
         headerLayout = new HeaderLayout();
         headerLayout.addStyleName("layout-with-border");
-
         addComponent(headerLayout);
         setExpandRatio(headerLayout,1f);
 
@@ -28,7 +28,6 @@ public class MainLayout extends VerticalLayout {
 
         footerLayout = new FooterLayout();
         addStyleName("layout-with-border");
-
         addComponent(footerLayout);
         setExpandRatio(footerLayout,1f);
     }

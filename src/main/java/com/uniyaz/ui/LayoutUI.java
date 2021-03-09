@@ -35,7 +35,4 @@ public class LayoutUI extends UI {
         return mainLayout;
     }
 
-    public void setMainLayout(MainLayout mainLayout) {
-        this.mainLayout = mainLayout;
-    }
 }

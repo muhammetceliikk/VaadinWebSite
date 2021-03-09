@@ -40,7 +40,5 @@ public class HeaderLayout extends HorizontalLayout {
         MenuBar.MenuItem content = itemMenu.addItem("Content", null, null);
         MenuBar.MenuItem addContent = content.addItem("Add Content", null, mycommand);
         MenuBar.MenuItem deleteContent = content.addItem("Delete Content", null, mycommand);
-
-
     }
 }

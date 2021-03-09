@@ -14,20 +14,21 @@ public class ContentLayout extends VerticalLayout {
     TextField categoryName, categoryID, contentID, contentName;
     RichTextArea contentText;
     DatabaseService databaseService = new DatabaseService();
-    Content tempContent;
+    Content selectedContent;
     ComboBox categoryComboBox, contentComboBox;
     Grid grid;
 
     public ContentLayout() {
         setSizeFull();
 
-        // Create a grid
         grid = new Grid();
         grid.setSizeFull();
         grid.setSelectionMode(Grid.SelectionMode.NONE);
+
         grid.addColumn("id", Integer.class);
         grid.addColumn("name", String.class);
         grid.addColumn("data", String.class);
+
         addComponent(grid);
     }
 
@@ -58,12 +59,12 @@ public class ContentLayout extends VerticalLayout {
     public void addCategory() {
 
         removeAllComponents();
-        MyButton saveButton = new MyButton("Save");
+        MyButton addButton = new MyButton("Add");
 
         categoryName = new TextField("Enter category name");
         addComponent(categoryName);
 
-        saveButton.addClickListener(new Button.ClickListener() {
+        addButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
@@ -76,27 +77,27 @@ public class ContentLayout extends VerticalLayout {
                 addCategory();
             }
         });
-        addComponent(saveButton);
+        addComponent(addButton);
     }
 
     public void deleteCategory() {
 
         removeAllComponents();
         MyButton deleteButton = new MyButton("Delete");
+
         ComboBox categoryComboBox = getCategoryComboBox("Categories");
         addComponent(categoryComboBox);
 
         categoryComboBox.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                Category temp = (Category) valueChangeEvent.getProperty().getValue();
+                Category selectedCategory = (Category) valueChangeEvent.getProperty().getValue();
 
                 deleteButton.addClickListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
                         try {
-                            databaseService.deleteCategory(String.valueOf(temp.getId()));
-                            deleteCategory();
+                            databaseService.deleteCategory(String.valueOf(selectedCategory.getId()));
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         } catch (ClassNotFoundException e) {
@@ -112,7 +113,8 @@ public class ContentLayout extends VerticalLayout {
 
     public void addContent() {
         removeAllComponents();
-        MyButton saveButton = new MyButton("Save");
+        MyButton addButton = new MyButton("Add");
+
         ComboBox categoryComboBox = getCategoryComboBox("Select page to add content");
         addComponent(categoryComboBox);
 
@@ -122,18 +124,18 @@ public class ContentLayout extends VerticalLayout {
         contentText = new RichTextArea();
         addComponent(contentText);
 
-        addComponent(saveButton);
+        addComponent(addButton);
 
         categoryComboBox.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                Category temp = (Category) valueChangeEvent.getProperty().getValue();
+                Category selectedCategory = (Category) valueChangeEvent.getProperty().getValue();
 
-                saveButton.addClickListener(new Button.ClickListener() {
+                addButton.addClickListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
                         try {
-                            databaseService.addContent(String.valueOf(temp.getId()), contentName.getValue(), contentText.getValue());
+                            databaseService.addContent(String.valueOf(selectedCategory.getId()), contentName.getValue(), contentText.getValue());
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         } catch (ClassNotFoundException e) {
@@ -144,12 +146,12 @@ public class ContentLayout extends VerticalLayout {
                 });
             }
         });
-
     }
 
     public void deleteContent() {
         removeAllComponents();
         MyButton deleteButton = new MyButton("Delete");
+
         categoryComboBox = getCategoryComboBox("Select page to delete content");
         addComponent(categoryComboBox);
 
@@ -160,17 +162,19 @@ public class ContentLayout extends VerticalLayout {
                     removeComponent(getComponent(2));
                     removeComponent(getComponent(1));
                 }
-                if (getComponentCount() > 1) {
+                else if (getComponentCount() > 1) {
                     removeComponent(getComponent(1));
                 }
-                Category temp = (Category) valueChangeEvent.getProperty().getValue();
-                ComboBox contentComboBox = getContentComboBox("Select content to delete", String.valueOf(temp.getId()));
+
+                Category selectedCategory = (Category) valueChangeEvent.getProperty().getValue();
+
+                ComboBox contentComboBox = getContentComboBox("Select content to delete", String.valueOf(selectedCategory.getId()));
                 addComponent(contentComboBox);
 
                 contentComboBox.addValueChangeListener(new Property.ValueChangeListener() {
                     @Override
                     public void valueChange(Property.ValueChangeEvent contentChangeEvent) {
-                        tempContent = (Content) contentChangeEvent.getProperty().getValue();
+                        selectedContent = (Content) contentChangeEvent.getProperty().getValue();
                         addComponent(deleteButton);
                     }
                 });
@@ -181,7 +185,7 @@ public class ContentLayout extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
-                    databaseService.deleteContent(String.valueOf(tempContent.getId()));
+                    databaseService.deleteContent(String.valueOf(selectedContent.getId()));
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -197,14 +201,15 @@ public class ContentLayout extends VerticalLayout {
 
         ComboBox categoryComboBox = new ComboBox();
         categoryComboBox.setCaption(caption);
+
         try {
             List<Category> categoryList = databaseService.getCategories();
             int count = categoryList.size();
             for (int i = 0; i < count; i++) {
-                Category c = categoryList.get(i);
-                categoryComboBox.addItem(c);
-                categoryComboBox.setId(String.valueOf(c.getId()));
-                categoryComboBox.setItemCaption(c, c.getName());
+                Category category = categoryList.get(i);
+                categoryComboBox.addItem(category);
+                categoryComboBox.setId(String.valueOf(category.getId()));
+                categoryComboBox.setItemCaption(category, category.getName());
             }
             categoryComboBox.setNullSelectionAllowed(false);
         } catch (SQLException throwables) {
@@ -219,14 +224,15 @@ public class ContentLayout extends VerticalLayout {
 
         ComboBox contentComboBox = new ComboBox();
         contentComboBox.setCaption(caption);
+
         try {
             List<Content> contentArrayList = databaseService.getContents(id);
             int count = contentArrayList.size();
             for (int i = 0; i < count; i++) {
-                Content c = contentArrayList.get(i);
-                contentComboBox.addItem(c);
-                contentComboBox.setId(String.valueOf(c.getId()));
-                contentComboBox.setItemCaption(c, c.getName());
+                Content content = contentArrayList.get(i);
+                contentComboBox.addItem(content);
+                contentComboBox.setId(String.valueOf(content.getId()));
+                contentComboBox.setItemCaption(content, content.getName());
             }
             contentComboBox.setNullSelectionAllowed(false);
         } catch (SQLException throwables) {
@@ -237,7 +243,7 @@ public class ContentLayout extends VerticalLayout {
         return contentComboBox;
     }
 
-    public void showContents(String id) {
+    public void fillContents(String id) {
         grid.getContainerDataSource().removeAllItems();
         try {
             List<Content> contentArrayList = databaseService.getContents(id);

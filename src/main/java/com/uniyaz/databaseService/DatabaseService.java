@@ -24,7 +24,6 @@ public class DatabaseService {
         categoryDao= new CategoryDao();
         return categoryDao.getCategories();
     }
-
     public void addContent(String categoryId, String name, String data) throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();
         contentDao.addContent(categoryId,name,data);
@@ -37,5 +36,4 @@ public class DatabaseService {
         contentDao= new ContentDao();
         return contentDao.getContents(id);
     }
-
 }
