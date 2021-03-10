@@ -1,6 +1,7 @@
 package com.uniyaz.components;
 
 import com.uniyaz.domain.Content;
+import com.uniyaz.domain.MyButton;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Image;

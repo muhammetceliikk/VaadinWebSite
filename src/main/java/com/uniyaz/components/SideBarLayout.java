@@ -2,6 +2,7 @@ package com.uniyaz.components;
 
 import com.uniyaz.databaseService.DatabaseService;
 import com.uniyaz.domain.Category;
+import com.uniyaz.domain.MyButton;
 import com.uniyaz.ui.LayoutUI;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;

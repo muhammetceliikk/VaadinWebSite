@@ -3,22 +3,17 @@ package com.uniyaz.components;
 import com.uniyaz.databaseService.DatabaseService;
 import com.uniyaz.domain.Category;
 import com.uniyaz.domain.Content;
+import com.uniyaz.domain.ImageUploader;
+import com.uniyaz.domain.MyButton;
 import com.uniyaz.ui.LayoutUI;
-import com.vaadin.client.ui.Icon;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.event.ContextClickEvent;
-import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.*;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.List;
 

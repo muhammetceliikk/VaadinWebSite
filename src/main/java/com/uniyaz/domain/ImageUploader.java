@@ -1,9 +1,7 @@
-package com.uniyaz.components;
+package com.uniyaz.domain;
 
 import com.vaadin.server.FileResource;
 import com.vaadin.server.Page;
-import com.vaadin.server.Resource;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Upload;
@@ -38,18 +36,7 @@ public class ImageUploader implements Upload.Receiver, Upload.SucceededListener 
     }
 
     @Override
-    public void uploadSucceeded(Upload.SucceededEvent succeededEvent) {/*
-        try {
-            FileResource fileResource = new FileResource(file);
-            System.out.println(fileResource.getSourceFile().length());
-            FileInputStream fin = new FileInputStream(file);
-            byte[] bytes = new byte[(int) file.length()];
-            fin.read(bytes);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+    public void uploadSucceeded(Upload.SucceededEvent succeededEvent) {
         image.setSource(new FileResource(file));
     }
 

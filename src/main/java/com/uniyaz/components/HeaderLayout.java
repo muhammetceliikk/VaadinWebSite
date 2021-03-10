@@ -1,10 +1,9 @@
 package com.uniyaz.components;
 
+import com.uniyaz.domain.MyButton;
 import com.uniyaz.ui.LayoutUI;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
 
 public class HeaderLayout extends HorizontalLayout {
 
