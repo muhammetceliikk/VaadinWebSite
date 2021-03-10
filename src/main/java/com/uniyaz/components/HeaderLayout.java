@@ -1,6 +1,7 @@
 package com.uniyaz.components;
 
 import com.uniyaz.ui.LayoutUI;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -12,14 +13,14 @@ public class HeaderLayout extends HorizontalLayout {
         setSizeFull();
         createMenu();
 
-        MyButton homePage = new MyButton("HOMEPAGE");
+        MyButton homePage = new MyButton();
         homePage.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 ((LayoutUI) UI.getCurrent()).getMainLayout().buildMainLayout();
             }
         });
-
+        homePage.setIcon(FontAwesome.HOME);
         addComponent(homePage);
     }
 
@@ -35,10 +36,11 @@ public class HeaderLayout extends HorizontalLayout {
 
         MenuBar.MenuItem category = itemMenu.addItem("Category", null, null);
         MenuBar.MenuItem addCategory = category.addItem("Add Category", null, mycommand);
-        MenuBar.MenuItem deleteCategory = category.addItem("Delete Category", null, mycommand);
+        MenuBar.MenuItem listCategories = category.addItem("List Categories", null, mycommand);
 
         MenuBar.MenuItem content = itemMenu.addItem("Content", null, null);
         MenuBar.MenuItem addContent = content.addItem("Add Content", null, mycommand);
         MenuBar.MenuItem deleteContent = content.addItem("Delete Content", null, mycommand);
+        MenuBar.MenuItem listContents = content.addItem("List Contents", null, mycommand);
     }
 }

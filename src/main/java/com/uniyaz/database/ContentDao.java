@@ -2,6 +2,8 @@ package com.uniyaz.database;
 
 import com.uniyaz.domain.Category;
 import com.uniyaz.domain.Content;
+import com.vaadin.ui.RichTextArea;
+import com.vaadin.ui.TextField;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +33,15 @@ public class ContentDao {
         String sql = "DELETE FROM UNIVERSAL.CONTENT WHERE ID= ?";
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, String.valueOf(content.getId()));
+        preparedStatement.execute();
+    }
+    public void updateContent(Content content, TextField contentName,RichTextArea richTextArea) throws SQLException, ClassNotFoundException {
+        connection = DatabaseConnection.getConnection();
+        String sql = "UPDATE UNIVERSAL.CONTENT SET Name=?,Data=? WHERE ID= ?";
+        preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, contentName.getValue());
+        preparedStatement.setString(2, richTextArea.getValue());
+        preparedStatement.setString(3, String.valueOf(content.getId()));
         preparedStatement.execute();
     }
 

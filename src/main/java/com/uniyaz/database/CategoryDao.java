@@ -1,6 +1,7 @@
 package com.uniyaz.database;
 
 import com.uniyaz.domain.Category;
+import com.vaadin.ui.TextField;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,6 +25,14 @@ public class CategoryDao {
         String sql = "DELETE FROM UNIVERSAL.CATEGORY WHERE ID= ?";
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, String.valueOf(category.getId()));
+        preparedStatement.execute();
+    }
+    public void updateCategory(Category category, TextField textField) throws SQLException, ClassNotFoundException {
+        connection = DatabaseConnection.getConnection();
+        String sql = "UPDATE UNIVERSAL.CATEGORY SET NAME=? WHERE ID= ?";
+        preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, String.valueOf(textField.getValue()));
+        preparedStatement.setString(2, String.valueOf(category.getId()));
         preparedStatement.execute();
     }
 

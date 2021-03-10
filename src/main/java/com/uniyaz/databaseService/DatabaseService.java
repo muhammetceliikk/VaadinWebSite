@@ -4,6 +4,8 @@ import com.uniyaz.database.CategoryDao;
 import com.uniyaz.database.ContentDao;
 import com.uniyaz.domain.Category;
 import com.uniyaz.domain.Content;
+import com.vaadin.ui.RichTextArea;
+import com.vaadin.ui.TextField;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,6 +22,10 @@ public class DatabaseService {
         categoryDao= new CategoryDao();
         categoryDao.deleteCategory(category);
     }
+    public void updateCategory(Category category, TextField textField) throws SQLException, ClassNotFoundException {
+        categoryDao= new CategoryDao();
+        categoryDao.updateCategory(category,textField);
+    }
     public List<Category> getCategories() throws SQLException, ClassNotFoundException {
         categoryDao= new CategoryDao();
         return categoryDao.getCategories();
@@ -31,6 +37,10 @@ public class DatabaseService {
     public void deleteContent(Content content) throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();
         contentDao.deleteContent(content);
+    }
+    public void updateContent(Content content, TextField contentName,RichTextArea richTextArea) throws SQLException, ClassNotFoundException {
+        contentDao= new ContentDao();
+        contentDao.updateContent(content,contentName,richTextArea);
     }
     public List<Content> getContents(String id) throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();

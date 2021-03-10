@@ -7,12 +7,14 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class SideBarLayout extends VerticalLayout {
     VerticalLayout insideBar;
+    MainLayout mainLayout = ((LayoutUI) UI.getCurrent()).getMainLayout();
     public SideBarLayout() {
         //label.setValue(((LayoutUI) UI.getCurrent()).getBodyLayout().getContentLayout().getContentLabel().getValue());
         setSizeFull();
@@ -24,6 +26,7 @@ public class SideBarLayout extends VerticalLayout {
         removeAllComponents();
 
         insideBar = new VerticalLayout();
+        addComponent(insideBar);
 
         DatabaseService databaseService = new DatabaseService();
         List<Category> categoryList;
@@ -32,10 +35,13 @@ public class SideBarLayout extends VerticalLayout {
             for (Category category : categoryList) {
                 MyButton myButton = new MyButton(category.getName());
                 myButton.setId(String.valueOf(category.getId()));
+                myButton.setStyleName(ValoTheme.BUTTON_LINK);
+                myButton.addStyleName(ValoTheme.BUTTON_LARGE);
                 myButton.addClickListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
-                        ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().fillContents(String.valueOf(category.getId()));
+                        mainLayout.getBodyLayout().getContentLayout().fillContents(String.valueOf(category.getId()));
+                        //((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().fillContents(String.valueOf(category.getId()));
                     }
                 });
                 insideBar.addComponent(myButton);
@@ -45,7 +51,7 @@ public class SideBarLayout extends VerticalLayout {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        addComponent(insideBar);
+
         setComponentAlignment(insideBar, Alignment.MIDDLE_CENTER);
     }
 }
