@@ -14,7 +14,6 @@ import java.util.List;
 
 public class SideBarLayout extends VerticalLayout {
     VerticalLayout insideBar;
-    MainLayout mainLayout = ((LayoutUI) UI.getCurrent()).getMainLayout();
     public SideBarLayout() {
         //label.setValue(((LayoutUI) UI.getCurrent()).getBodyLayout().getContentLayout().getContentLabel().getValue());
         setSizeFull();
@@ -40,8 +39,7 @@ public class SideBarLayout extends VerticalLayout {
                 myButton.addClickListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
-                        mainLayout.getBodyLayout().getContentLayout().fillContents(String.valueOf(category.getId()));
-                        //((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().fillContents(String.valueOf(category.getId()));
+                        ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().fillContents(String.valueOf(category.getId()));
                     }
                 });
                 insideBar.addComponent(myButton);

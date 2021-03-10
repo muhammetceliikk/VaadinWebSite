@@ -9,12 +9,17 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Page;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -28,6 +33,47 @@ public class ContentLayout extends VerticalLayout {
     public ContentLayout() {
         setSizeFull();
 
+        final Embedded image = new Embedded("Uploaded Image");
+        image.setVisible(false);
+
+        class ImageUploader implements Upload.Receiver, Upload.SucceededListener {
+            public File file;
+
+            public OutputStream receiveUpload(String filename,
+                                              String mimeType) {
+                // Create upload stream
+                FileOutputStream fos = null; // Stream to write to
+                try {
+                    // Open the file for writing.
+                    file = new File(filename);
+                    fos = new FileOutputStream(file);
+                } catch (final java.io.FileNotFoundException e) {
+                    new Notification("Could not open file<br/>",
+                            e.getMessage(),
+                            Notification.Type.ERROR_MESSAGE)
+                            .show(Page.getCurrent());
+                    return null;
+                }
+                return fos; // Return the output stream to write to
+            }
+            @Override
+            public void uploadSucceeded(Upload.SucceededEvent succeededEvent) {
+                image.setVisible(true);
+                image.setSource(new FileResource(file));
+            }
+        };
+
+        ImageUploader receiver = new ImageUploader();
+        Upload upload = new Upload("Upload it here", receiver);
+        upload.setButtonCaption("Start Upload");
+        upload.addSucceededListener(receiver);
+
+        Panel panel = new Panel("Cool Image Storage");
+        Layout panelContent = new VerticalLayout();
+        panelContent.addComponents(upload, image);
+        panel.setContent(panelContent);
+
+        addComponent(panel);
     }
 
 
