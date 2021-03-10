@@ -7,6 +7,7 @@ import com.uniyaz.domain.Content;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TextField;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class DatabaseService {
         categoryDao= new CategoryDao();
         return categoryDao.getCategories();
     }
-    public void addContent(Category category,Content content) throws SQLException, ClassNotFoundException {
+    public void addContent(Category category,Content content) throws SQLException, ClassNotFoundException, FileNotFoundException {
         contentDao= new ContentDao();
         contentDao.addContent(category,content);
     }

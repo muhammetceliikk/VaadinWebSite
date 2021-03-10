@@ -9,17 +9,16 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.server.FileResource;
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Page;
-import com.vaadin.server.Resource;
+import com.vaadin.server.*;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -27,55 +26,11 @@ public class ContentLayout extends VerticalLayout {
     TextField categoryName, contentName;
     RichTextArea contentText;
     DatabaseService databaseService = new DatabaseService();
-    Content selectedContent;
-    ComboBox categoryComboBox;
+    Image image = new Image();
 
     public ContentLayout() {
         setSizeFull();
-
-        final Embedded image = new Embedded("Uploaded Image");
-        image.setVisible(false);
-
-        class ImageUploader implements Upload.Receiver, Upload.SucceededListener {
-            public File file;
-
-            public OutputStream receiveUpload(String filename,
-                                              String mimeType) {
-                // Create upload stream
-                FileOutputStream fos = null; // Stream to write to
-                try {
-                    // Open the file for writing.
-                    file = new File(filename);
-                    fos = new FileOutputStream(file);
-                } catch (final java.io.FileNotFoundException e) {
-                    new Notification("Could not open file<br/>",
-                            e.getMessage(),
-                            Notification.Type.ERROR_MESSAGE)
-                            .show(Page.getCurrent());
-                    return null;
-                }
-                return fos; // Return the output stream to write to
-            }
-            @Override
-            public void uploadSucceeded(Upload.SucceededEvent succeededEvent) {
-                image.setVisible(true);
-                image.setSource(new FileResource(file));
-            }
-        };
-
-        ImageUploader receiver = new ImageUploader();
-        Upload upload = new Upload("Upload it here", receiver);
-        upload.setButtonCaption("Start Upload");
-        upload.addSucceededListener(receiver);
-
-        Panel panel = new Panel("Cool Image Storage");
-        Layout panelContent = new VerticalLayout();
-        panelContent.addComponents(upload, image);
-        panel.setContent(panelContent);
-
-        addComponent(panel);
     }
-
 
     public void ContentLayoutFillBy(String type) {
         setSizeFull();
@@ -87,14 +42,8 @@ public class ContentLayout extends VerticalLayout {
             case ("Add Category"):
                 addCategory();
                 break;
-            case ("Delete Category"):
-                deleteCategory();
-                break;
             case ("Add Content"):
                 addContent();
-                break;
-            case ("Delete Content"):
-                deleteContent();
                 break;
             case ("List Contents"):
                 listContents();
@@ -137,133 +86,6 @@ public class ContentLayout extends VerticalLayout {
 
         categoryLayout.setComponentAlignment(addButton, Alignment.MIDDLE_CENTER);
         setComponentAlignment(categoryLayout, Alignment.MIDDLE_CENTER);
-    }
-
-    public void deleteCategory() {
-
-        removeAllComponents();
-        MyButton deleteButton = new MyButton("Delete");
-
-        ComboBox categoryComboBox = getCategoryComboBox("Categories");
-        addComponent(categoryComboBox);
-
-        categoryComboBox.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                Category selectedCategory = (Category) valueChangeEvent.getProperty().getValue();
-
-                deleteButton.addClickListener(new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent clickEvent) {
-                        try {
-                            databaseService.deleteCategory(selectedCategory);
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        deleteCategory();
-                    }
-                });
-            }
-        });
-        addComponent(deleteButton);
-    }
-
-    public void addContent() {
-
-        removeAllComponents();
-
-        VerticalLayout contentLayout = new VerticalLayout();
-        contentLayout.setSizeUndefined();
-        addComponent(contentLayout);
-
-        ComboBox categoryComboBox = getCategoryComboBox("Select page to add content");
-        contentLayout.addComponent(categoryComboBox);
-
-        contentName = new TextField("Enter content name");
-        contentLayout.addComponent(contentName);
-
-        contentText = new RichTextArea();
-        contentLayout.addComponent(contentText);
-
-        MyButton addButton = new MyButton("Add");
-        contentLayout.addComponent(addButton);
-
-        categoryComboBox.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                Category selectedCategory = (Category) valueChangeEvent.getProperty().getValue();
-
-                addButton.addClickListener(new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent clickEvent) {
-                        try {
-                            Content content = new Content();
-                            content.setName(contentName.getValue());
-                            content.setData(contentText.getValue());
-                            databaseService.addContent(selectedCategory, content);
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        addContent();
-                    }
-                });
-            }
-        });
-
-        contentLayout.setComponentAlignment(addButton, Alignment.MIDDLE_RIGHT);
-        setComponentAlignment(contentLayout, Alignment.MIDDLE_CENTER);
-    }
-
-    public void deleteContent() {
-        removeAllComponents();
-        MyButton deleteButton = new MyButton("Delete");
-
-        categoryComboBox = getCategoryComboBox("Select page to delete content");
-        addComponent(categoryComboBox);
-
-        categoryComboBox.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                if (getComponentCount() > 2) {
-                    removeComponent(getComponent(2));
-                    removeComponent(getComponent(1));
-                } else if (getComponentCount() > 1) {
-                    removeComponent(getComponent(1));
-                }
-
-                Category selectedCategory = (Category) valueChangeEvent.getProperty().getValue();
-
-                ComboBox contentComboBox = getContentComboBox("Select content to delete", String.valueOf(selectedCategory.getId()));
-                addComponent(contentComboBox);
-
-                contentComboBox.addValueChangeListener(new Property.ValueChangeListener() {
-                    @Override
-                    public void valueChange(Property.ValueChangeEvent contentChangeEvent) {
-                        selectedContent = (Content) contentChangeEvent.getProperty().getValue();
-                        addComponent(deleteButton);
-                    }
-                });
-            }
-        });
-
-        deleteButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                try {
-                    databaseService.deleteContent(selectedContent);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                deleteContent();
-            }
-        });
-
     }
 
     public void listCategories() {
@@ -338,6 +160,78 @@ public class ContentLayout extends VerticalLayout {
         addComponent(contentTable);
     }
 
+    public void addContent() {
+
+        removeAllComponents();
+
+        VerticalLayout contentLayout = new VerticalLayout();
+        contentLayout.setSizeUndefined();
+        addComponent(contentLayout);
+
+        ComboBox categoryComboBox = getCategoryComboBox("Select page to add content");
+        contentLayout.addComponent(categoryComboBox);
+
+        contentName = new TextField("Enter content name");
+        contentLayout.addComponent(contentName);
+
+        addUploadBar(contentLayout);
+
+        contentText = new RichTextArea();
+        contentLayout.addComponent(contentText);
+
+        MyButton addButton = new MyButton("Add");
+        contentLayout.addComponent(addButton);
+
+        categoryComboBox.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                Category selectedCategory = (Category) valueChangeEvent.getProperty().getValue();
+
+                addButton.addClickListener(new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent clickEvent) {
+                        try {
+                            Content content = new Content();
+                            FileResource fileResource = (FileResource) image.getSource();
+                            byte[] bytes = new byte[(int) fileResource.getSourceFile().length()];
+                            fileResource.getStream().getStream().read(bytes);
+                            content.setImage(bytes);
+                            content.setName(contentName.getValue());
+                            content.setData(contentText.getValue());
+                            databaseService.addContent(selectedCategory, content);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        addContent();
+                    }
+                });
+            }
+        });
+
+        contentLayout.setComponentAlignment(addButton, Alignment.MIDDLE_RIGHT);
+        setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
+    }
+
+    public void addUploadBar(VerticalLayout contentLayout) {
+
+        VerticalLayout uploadLayout = new VerticalLayout();
+        contentLayout.addComponent(uploadLayout);
+
+        image = new Image();
+
+        ImageUploader receiver = new ImageUploader(image);
+        Upload upload = new Upload("Upload it here", receiver);
+        upload.setButtonCaption("Start Upload");
+        upload.addSucceededListener(receiver);
+        uploadLayout.addComponent(upload);
+    }
+
     public void listContents() {
         removeAllComponents();
 
@@ -355,8 +249,10 @@ public class ContentLayout extends VerticalLayout {
             for (Category category : categoryList) {
                 List<Content> contentArrayList = databaseService.getContents(String.valueOf(category.getId()));
                 for (Content content : contentArrayList) {
+
                     MyButton updateButton = new MyButton();
                     updateButton.setIcon(FontAwesome.EDIT);
+
                     MyButton deleteButton = new MyButton();
                     deleteButton.setIcon(FontAwesome.REMOVE);
 
@@ -404,10 +300,11 @@ public class ContentLayout extends VerticalLayout {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
         addComponent(contentTable);
     }
 
-    public void updateContent(Content content){
+    public void updateContent(Content content) {
         removeAllComponents();
 
         VerticalLayout contentLayout = new VerticalLayout();
@@ -426,14 +323,14 @@ public class ContentLayout extends VerticalLayout {
         updateButton.setIcon(FontAwesome.EDIT);
         contentLayout.addComponent(updateButton);
 
-        contentLayout.setComponentAlignment(updateButton,Alignment.MIDDLE_RIGHT);
-        setComponentAlignment(contentLayout,Alignment.TOP_CENTER);
+        contentLayout.setComponentAlignment(updateButton, Alignment.MIDDLE_RIGHT);
+        setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
 
         updateButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
-                    databaseService.updateContent(content,contentName,contentText);
+                    databaseService.updateContent(content, contentName, contentText);
                     listContents();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
@@ -467,30 +364,7 @@ public class ContentLayout extends VerticalLayout {
         return categoryComboBox;
     }
 
-    public ComboBox getContentComboBox(String caption, String id) {
-
-        ComboBox contentComboBox = new ComboBox();
-        contentComboBox.setCaption(caption);
-
-        try {
-            List<Content> contentArrayList = databaseService.getContents(id);
-            int count = contentArrayList.size();
-            for (int i = 0; i < count; i++) {
-                Content content = contentArrayList.get(i);
-                contentComboBox.addItem(content);
-                contentComboBox.setId(String.valueOf(content.getId()));
-                contentComboBox.setItemCaption(content, content.getName());
-            }
-            contentComboBox.setNullSelectionAllowed(false);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return contentComboBox;
-    }
-
-    public void fillContents(String id) {
+    public void fillContentsById(String id) {
 
         removeAllComponents();
 
@@ -501,42 +375,63 @@ public class ContentLayout extends VerticalLayout {
             int verticalCount = (arraySize / 3) + 1;
 
             for (int iterator = 0; iterator < verticalCount; iterator++) {
-                VerticalLayout verticalLayout2 = new VerticalLayout();
-                HorizontalLayout inHorizontalLayout = new HorizontalLayout();
-                inHorizontalLayout.setSizeFull();
-                verticalLayout2.addComponent(inHorizontalLayout);
-                addComponent(verticalLayout2);
+                VerticalLayout row = new VerticalLayout();
+                HorizontalLayout column = new HorizontalLayout();
+                column.setSizeFull();
+                row.addComponent(column);
+                addComponent(row);
             }
 
             for (int iterator = 0; iterator < arraySize; iterator++) {
                 Content content = contentArrayList.get(iterator);
 
-                MyButton button = new MyButton(content.getName());
-                button.setId(String.valueOf(content.getId()));
-                button.setData(content.getData());
-                button.setIcon(FontAwesome.FILE);
-                button.setStyleName("link");
+                VerticalLayout row = (VerticalLayout) getComponent(iterator / 3);
+                HorizontalLayout column = (HorizontalLayout) (row.getComponent(0));
 
+                ImageContentLayout imageContentLayout = new ImageContentLayout(content);
+                column.addComponent(imageContentLayout);
+
+                Button button = (Button) imageContentLayout.getComponent(1);
                 button.addClickListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
-                        removeAllComponents();
-                        Label label = new Label();
-                        label.setContentMode(ContentMode.HTML);
-                        label.setValue((String) clickEvent.getButton().getData());
-                        addComponent(label);
+                        openContent(clickEvent);
                     }
                 });
-
-                VerticalLayout verticalLayout = (VerticalLayout) getComponent(iterator / 3);
-                HorizontalLayout horizontalLayout = (HorizontalLayout) (verticalLayout.getComponent(0));
-
-                horizontalLayout.addComponent(button);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public void openContent(Button.ClickEvent clickEvent) {
+
+        removeAllComponents();
+        setSizeFull();
+
+        VerticalLayout contentLayout = new VerticalLayout();
+        contentLayout.setSizeFull();
+        addComponent(contentLayout);
+
+        Label header = new Label();
+        header.setStyleName(ValoTheme.LABEL_LARGE);
+        header.addStyleName(ValoTheme.LABEL_BOLD);
+        header.setContentMode(ContentMode.HTML);
+        header.setValue(clickEvent.getButton().getCaption());
+        header.setSizeUndefined();
+        contentLayout.addComponent(header);
+
+        Label data = new Label();
+        data.setContentMode(ContentMode.HTML);
+        data.setValue((String) clickEvent.getButton().getData());
+        contentLayout.addComponent(data);
+
+        contentLayout.setComponentAlignment(header, Alignment.TOP_CENTER);
+        contentLayout.setExpandRatio(header, 0.1f);
+        contentLayout.setExpandRatio(data, 0.9f);
+
+        setComponentAlignment(contentLayout, Alignment.MIDDLE_CENTER);
     }
 }

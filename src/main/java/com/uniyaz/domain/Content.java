@@ -1,8 +1,10 @@
 package com.uniyaz.domain;
 
 
-public class Content extends BaseDomain {
+import com.mysql.cj.jdbc.Blob;
 
+public class Content extends BaseDomain {
+    private byte[] image;
     private int id;
     private String name;
     private String data;
@@ -31,5 +33,13 @@ public class Content extends BaseDomain {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

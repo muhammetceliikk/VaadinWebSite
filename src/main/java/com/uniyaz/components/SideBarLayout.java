@@ -39,7 +39,7 @@ public class SideBarLayout extends VerticalLayout {
                 myButton.addClickListener(new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
-                        ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().fillContents(String.valueOf(category.getId()));
+                        ((LayoutUI) UI.getCurrent()).getMainLayout().getBodyLayout().getContentLayout().fillContentsById(String.valueOf(category.getId()));
                     }
                 });
                 insideBar.addComponent(myButton);
