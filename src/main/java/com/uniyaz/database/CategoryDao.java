@@ -12,18 +12,18 @@ public class CategoryDao {
     ResultSet resultSet = null;
     List<Category> categoryList = new ArrayList<Category>();
 
-    public void addCategory(String name) throws SQLException, ClassNotFoundException {
+    public void addCategory(Category category) throws SQLException, ClassNotFoundException {
         connection = DatabaseConnection.getConnection();
         String sql = "INSERT INTO UNIVERSAL.CATEGORY (NAME) VALUES(?)";
         preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, name);
+        preparedStatement.setString(1, category.getName());
         preparedStatement.execute();
     }
-    public void deleteCategory(String id) throws SQLException, ClassNotFoundException {
+    public void deleteCategory(Category category) throws SQLException, ClassNotFoundException {
         connection = DatabaseConnection.getConnection();
         String sql = "DELETE FROM UNIVERSAL.CATEGORY WHERE ID= ?";
         preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, id);
+        preparedStatement.setString(1, String.valueOf(category.getId()));
         preparedStatement.execute();
     }
 

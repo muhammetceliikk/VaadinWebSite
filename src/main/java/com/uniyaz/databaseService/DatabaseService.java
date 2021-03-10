@@ -12,25 +12,25 @@ public class DatabaseService {
     public CategoryDao categoryDao;
     public ContentDao contentDao;
 
-    public void addCategory(String name) throws SQLException, ClassNotFoundException {
+    public void addCategory(Category category) throws SQLException, ClassNotFoundException {
         categoryDao= new CategoryDao();
-        categoryDao.addCategory(name);
+        categoryDao.addCategory(category);
     }
-    public void deleteCategory(String id) throws SQLException, ClassNotFoundException {
+    public void deleteCategory(Category category) throws SQLException, ClassNotFoundException {
         categoryDao= new CategoryDao();
-        categoryDao.deleteCategory(id);
+        categoryDao.deleteCategory(category);
     }
     public List<Category> getCategories() throws SQLException, ClassNotFoundException {
         categoryDao= new CategoryDao();
         return categoryDao.getCategories();
     }
-    public void addContent(String categoryId, String name, String data) throws SQLException, ClassNotFoundException {
+    public void addContent(Category category,Content content) throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();
-        contentDao.addContent(categoryId,name,data);
+        contentDao.addContent(category,content);
     }
-    public void deleteContent(String id) throws SQLException, ClassNotFoundException {
+    public void deleteContent(Content content) throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();
-        contentDao.deleteContent(id);
+        contentDao.deleteContent(content);
     }
     public List<Content> getContents(String id) throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();

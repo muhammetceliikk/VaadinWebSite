@@ -5,6 +5,7 @@ import com.uniyaz.domain.Category;
 import com.uniyaz.domain.Content;
 import com.uniyaz.ui.LayoutUI;
 import com.vaadin.data.Property;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.*;
 
 import java.sql.SQLException;
@@ -21,15 +22,6 @@ public class ContentLayout extends VerticalLayout {
     public ContentLayout() {
         setSizeFull();
 
-        grid = new Grid();
-        grid.setSizeFull();
-        grid.setSelectionMode(Grid.SelectionMode.NONE);
-
-        grid.addColumn("id", Integer.class);
-        grid.addColumn("name", String.class);
-        grid.addColumn("data", String.class);
-
-        addComponent(grid);
     }
 
 
@@ -68,7 +60,9 @@ public class ContentLayout extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
-                    databaseService.addCategory(categoryName.getValue());
+                    Category category = new Category();
+                    category.setName(categoryName.getValue());
+                    databaseService.addCategory(category);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -78,7 +72,6 @@ public class ContentLayout extends VerticalLayout {
             }
         });
         addComponent(addButton);
-        
     }
 
     public void deleteCategory() {
@@ -98,7 +91,7 @@ public class ContentLayout extends VerticalLayout {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
                         try {
-                            databaseService.deleteCategory(String.valueOf(selectedCategory.getId()));
+                            databaseService.deleteCategory(selectedCategory);
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         } catch (ClassNotFoundException e) {
@@ -136,7 +129,10 @@ public class ContentLayout extends VerticalLayout {
                     @Override
                     public void buttonClick(Button.ClickEvent clickEvent) {
                         try {
-                            databaseService.addContent(String.valueOf(selectedCategory.getId()), contentName.getValue(), contentText.getValue());
+                            Content content = new Content();
+                            content.setName(contentName.getValue());
+                            content.setData(contentText.getValue());
+                            databaseService.addContent(selectedCategory,content);
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         } catch (ClassNotFoundException e) {
@@ -186,7 +182,7 @@ public class ContentLayout extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
-                    databaseService.deleteContent(String.valueOf(selectedContent.getId()));
+                    databaseService.deleteContent(selectedContent);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -245,11 +241,37 @@ public class ContentLayout extends VerticalLayout {
     }
 
     public void fillContents(String id) {
-        grid.getContainerDataSource().removeAllItems();
+
+        removeAllComponents();
+        GridLayout gridLayout = new GridLayout();
+        addComponent(gridLayout);
+        /*grid = new Grid();
+        grid.setSizeFull();
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
+
+        grid.addColumn("id", Integer.class);
+        grid.addColumn("name", String.class);
+        grid.addColumn("data", String.class);
+
+        addComponent(grid);
+
+        grid.getContainerDataSource().removeAllItems();*/
         try {
             List<Content> contentArrayList = databaseService.getContents(id);
             for (Content content : contentArrayList) {
-                grid.addRow(content.getId(), content.getName(), content.getData());
+                Link link= new Link();
+                link.setCaption(content.getName());
+                link.setId(String.valueOf(content.getId()));
+                link.setData(content.getData());
+                gridLayout.addComponent(link);
+
+                gridLayout.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+                    @Override
+                    public void layoutClick(LayoutEvents.LayoutClickEvent layoutClickEvent) {
+                        System.out.println(layoutClickEvent.getComponent().getId());
+                    }
+                });
+                //grid.addRow(content.getId(), content.getName(), content.getData());
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

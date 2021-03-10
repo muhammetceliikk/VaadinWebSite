@@ -1,5 +1,6 @@
 package com.uniyaz.database;
 
+import com.uniyaz.domain.Category;
 import com.uniyaz.domain.Content;
 
 import java.sql.Connection;
@@ -16,20 +17,20 @@ public class ContentDao {
     ResultSet resultSet = null;
     List<Content> contentList = new ArrayList<Content>();
 
-    public void addContent(String categoryId,String name,String data) throws SQLException, ClassNotFoundException {
+    public void addContent(Category category, Content content) throws SQLException, ClassNotFoundException {
         connection = DatabaseConnection.getConnection();
         String sql = "INSERT INTO UNIVERSAL.CONTENT (NAME,CategoryID,Data) VALUES(?,?,?)";
         preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, name);
-        preparedStatement.setString(2, categoryId);
-        preparedStatement.setString(3, data);
+        preparedStatement.setString(1, content.getName());
+        preparedStatement.setString(2, String.valueOf(category.getId()));
+        preparedStatement.setString(3, content.getData());
         preparedStatement.execute();
     }
-    public void deleteContent(String id) throws SQLException, ClassNotFoundException {
+    public void deleteContent(Content content) throws SQLException, ClassNotFoundException {
         connection = DatabaseConnection.getConnection();
         String sql = "DELETE FROM UNIVERSAL.CONTENT WHERE ID= ?";
         preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, id);
+        preparedStatement.setString(1, String.valueOf(content.getId()));
         preparedStatement.execute();
     }
 
