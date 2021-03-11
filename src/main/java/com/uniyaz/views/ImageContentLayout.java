@@ -1,8 +1,7 @@
-package com.uniyaz.components;
+package com.uniyaz.views;
 
+import com.uniyaz.components.MyButton;
 import com.uniyaz.domain.Content;
-import com.uniyaz.domain.MyButton;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.VerticalLayout;

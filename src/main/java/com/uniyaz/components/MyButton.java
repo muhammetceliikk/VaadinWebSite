@@ -1,4 +1,4 @@
-package com.uniyaz.domain;
+package com.uniyaz.components;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.themes.ValoTheme;

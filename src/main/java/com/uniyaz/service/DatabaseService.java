@@ -1,4 +1,4 @@
-package com.uniyaz.databaseService;
+package com.uniyaz.service;
 
 import com.uniyaz.database.CategoryDao;
 import com.uniyaz.database.ContentDao;

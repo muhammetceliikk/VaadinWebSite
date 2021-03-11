@@ -1,4 +1,4 @@
-package com.uniyaz.domain;
+package com.uniyaz.components;
 
 import com.vaadin.server.FileResource;
 import com.vaadin.server.Page;

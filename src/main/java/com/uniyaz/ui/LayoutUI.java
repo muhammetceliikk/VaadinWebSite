@@ -1,6 +1,6 @@
 package com.uniyaz.ui;
 
-import com.uniyaz.components.MainLayout;
+import com.uniyaz.views.MainLayout;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.Page;

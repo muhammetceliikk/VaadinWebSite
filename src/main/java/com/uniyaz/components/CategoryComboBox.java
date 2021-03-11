@@ -1,6 +1,7 @@
-package com.uniyaz.domain;
+package com.uniyaz.components;
 
-import com.uniyaz.databaseService.DatabaseService;
+import com.uniyaz.service.DatabaseService;
+import com.uniyaz.domain.Category;
 import com.vaadin.ui.ComboBox;
 
 import java.sql.SQLException;

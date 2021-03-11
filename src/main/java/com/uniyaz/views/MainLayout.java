@@ -1,4 +1,4 @@
-package com.uniyaz.components;
+package com.uniyaz.views;
 
 import com.vaadin.ui.VerticalLayout;
 
