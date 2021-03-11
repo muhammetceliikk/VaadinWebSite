@@ -31,9 +31,9 @@ public class DatabaseService {
         categoryDao= new CategoryDao();
         return categoryDao.getCategories();
     }
-    public void addContent(Category category,Content content) throws SQLException, ClassNotFoundException, FileNotFoundException {
+    public void addContent(Content content) throws SQLException, ClassNotFoundException, FileNotFoundException {
         contentDao= new ContentDao();
-        contentDao.addContent(category,content);
+        contentDao.addContent(content);
     }
     public void deleteContent(Content content) throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();
@@ -43,8 +43,12 @@ public class DatabaseService {
         contentDao= new ContentDao();
         contentDao.updateContent(content,contentName,richTextArea);
     }
-    public List<Content> getContents(String id) throws SQLException, ClassNotFoundException {
+    public List<Content> getContents() throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();
-        return contentDao.getContents(id);
+        return contentDao.getContents();
+    }
+    public List<Content> getContents2(String id) throws SQLException, ClassNotFoundException {
+        contentDao= new ContentDao();
+        return contentDao.getContents2(id);
     }
 }

@@ -2,23 +2,28 @@ package com.uniyaz.domain;
 
 
 public class Category extends BaseDomain {
-    private int id;
-    private String name;
+
+    public Category(){
+
+    }
+
+    @Override
+    public void setId(int id) {
+        super.setId(id);
+    }
+
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+    }
+
     @Override
     public int getId() {
-        return id;
+        return super.getId();
     }
 
     @Override
     public String getName() {
-        return name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return super.getName();
     }
 }

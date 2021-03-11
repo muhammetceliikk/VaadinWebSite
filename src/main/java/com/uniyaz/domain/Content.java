@@ -1,13 +1,21 @@
 package com.uniyaz.domain;
 
-
-import com.mysql.cj.jdbc.Blob;
-
 public class Content extends BaseDomain {
     private byte[] image;
-    private int id;
-    private String name;
     private String data;
+    private Category category;
+
+    public Content(){
+        category=new Category();
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 
     public String getData() {
         return data;
@@ -18,28 +26,30 @@ public class Content extends BaseDomain {
     }
 
     @Override
+    public void setId(int id) {
+        super.setId(id);
+    }
+
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+    }
+
+    @Override
     public int getId() {
-        return id;
+        return super.getId();
     }
 
     @Override
     public String getName() {
-        return name;
+        return super.getName();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
