@@ -28,7 +28,6 @@ public class ImageContentLayout extends VerticalLayout {
 
         MyButton button = new MyButton(content.getName());
         button.setData(content.getData());
-        button.setIcon(FontAwesome.FILE);
         button.setStyleName("link");
         addComponent(button);
     }

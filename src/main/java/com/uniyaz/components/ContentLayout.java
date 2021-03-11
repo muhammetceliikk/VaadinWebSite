@@ -1,10 +1,7 @@
 package com.uniyaz.components;
 
 import com.uniyaz.databaseService.DatabaseService;
-import com.uniyaz.domain.Category;
-import com.uniyaz.domain.Content;
-import com.uniyaz.domain.ImageUploader;
-import com.uniyaz.domain.MyButton;
+import com.uniyaz.domain.*;
 import com.uniyaz.ui.LayoutUI;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -76,6 +73,7 @@ public class ContentLayout extends VerticalLayout {
                     Category category = new Category();
                     category.setName(categoryName.getValue());
                     databaseService.addCategory(category);
+                    Notification.show("Category added");
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -129,6 +127,7 @@ public class ContentLayout extends VerticalLayout {
                         try {
                             TextField test = (TextField) category_name.getValue();
                             databaseService.updateCategory(category, test);
+                            Notification.show("Category updated");
                             listCategories();
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
@@ -143,6 +142,7 @@ public class ContentLayout extends VerticalLayout {
                     public void buttonClick(Button.ClickEvent clickEvent) {
                         try {
                             databaseService.deleteCategory(category);
+                            Notification.show("Category deleted");
                             listCategories();
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
@@ -169,7 +169,8 @@ public class ContentLayout extends VerticalLayout {
         contentLayout.setSizeUndefined();
         addComponent(contentLayout);
 
-        ComboBox categoryComboBox = getCategoryComboBox("Select page to add content");
+        CategoryComboBox createComboBox = new CategoryComboBox("Select page to add Content");
+        ComboBox categoryComboBox = createComboBox.getComboBox();
         contentLayout.addComponent(categoryComboBox);
 
         contentName = new TextField("Enter content name");
@@ -200,6 +201,7 @@ public class ContentLayout extends VerticalLayout {
                             content.setName(contentName.getValue());
                             content.setData(contentText.getValue());
                             databaseService.addContent(selectedCategory, content);
+                            Notification.show("Content added");
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         } catch (ClassNotFoundException e) {
@@ -286,6 +288,7 @@ public class ContentLayout extends VerticalLayout {
                         public void buttonClick(Button.ClickEvent clickEvent) {
                             try {
                                 databaseService.deleteContent(content);
+                                Notification.show("Content deleted");
                                 listContents();
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
@@ -332,6 +335,7 @@ public class ContentLayout extends VerticalLayout {
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
                     databaseService.updateContent(content, contentName, contentText);
+                    Notification.show("Content updated");
                     listContents();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
@@ -340,29 +344,6 @@ public class ContentLayout extends VerticalLayout {
                 }
             }
         });
-    }
-
-    public ComboBox getCategoryComboBox(String caption) {
-
-        ComboBox categoryComboBox = new ComboBox();
-        categoryComboBox.setCaption(caption);
-
-        try {
-            List<Category> categoryList = databaseService.getCategories();
-            int count = categoryList.size();
-            for (int i = 0; i < count; i++) {
-                Category category = categoryList.get(i);
-                categoryComboBox.addItem(category);
-                categoryComboBox.setId(String.valueOf(category.getId()));
-                categoryComboBox.setItemCaption(category, category.getName());
-            }
-            categoryComboBox.setNullSelectionAllowed(false);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return categoryComboBox;
     }
 
     public void fillContentsById(String id) {
