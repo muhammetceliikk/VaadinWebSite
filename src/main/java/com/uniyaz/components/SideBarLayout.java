@@ -18,7 +18,6 @@ public class SideBarLayout extends VerticalLayout {
     public SideBarLayout() {
         //label.setValue(((LayoutUI) UI.getCurrent()).getBodyLayout().getContentLayout().getContentLabel().getValue());
         setSizeFull();
-        addStyleName("layout-with-border");
         buildSideBarLayout();
     }
 

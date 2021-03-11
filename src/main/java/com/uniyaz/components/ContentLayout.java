@@ -25,6 +25,12 @@ public class ContentLayout extends VerticalLayout {
 
     public ContentLayout() {
         setSizeFull();
+        Label welcome = new Label("Welcome");
+        welcome.setSizeUndefined();
+        welcome.setValue("Welcome");
+        addComponent(welcome);
+        setComponentAlignment(welcome,Alignment.TOP_CENTER);
+
     }
 
     public void ContentLayoutFillBy(String type) {
