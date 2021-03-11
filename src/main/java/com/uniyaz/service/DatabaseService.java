@@ -39,9 +39,9 @@ public class DatabaseService {
         contentDao= new ContentDao();
         contentDao.deleteContent(content);
     }
-    public void updateContent(Content content, TextField contentName,RichTextArea richTextArea) throws SQLException, ClassNotFoundException {
+    public void updateContent(Content content) throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();
-        contentDao.updateContent(content,contentName,richTextArea);
+        contentDao.updateContent(content);
     }
     public List<Content> getContents() throws SQLException, ClassNotFoundException {
         contentDao= new ContentDao();

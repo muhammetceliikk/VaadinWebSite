@@ -32,13 +32,14 @@ public class ContentFunctions extends VerticalLayout {
     @PropertyId("data")
     RichTextArea contentText;
 
-
     FieldGroup binder;
     BeanItem<Content> contentBeanItem;
 
     Image image = new Image();
     DatabaseService databaseService = new DatabaseService();
     MyButton addButton;
+    Table contentTable;
+    IndexedContainer container;
 
     public ContentFunctions() {
         buildContentLayout();
@@ -118,10 +119,17 @@ public class ContentFunctions extends VerticalLayout {
 
         removeAllComponents();
 
-        Table contentTable = new Table();
-        contentTable.setSizeFull();
+        createTable();
+        fillTable();
+    }
 
-        IndexedContainer container = new IndexedContainer();
+    public void createTable(){
+
+        contentTable = new Table();
+        contentTable.setSizeFull();
+        addComponent(contentTable);
+
+        container = new IndexedContainer();
 
         container.addContainerProperty("Category ID", Integer.class, null);
         container.addContainerProperty("Category name", String.class, null);
@@ -131,6 +139,9 @@ public class ContentFunctions extends VerticalLayout {
         container.addContainerProperty("Delete", MyButton.class, null);
 
         contentTable.setContainerDataSource(container);
+    }
+
+    public void fillTable() throws SQLException, ClassNotFoundException {
 
         List<Content> contentArrayList = databaseService.getContents();
         for (Content content : contentArrayList) {
@@ -149,7 +160,6 @@ public class ContentFunctions extends VerticalLayout {
             item.getItemProperty("Content name").setValue(content.getName());
             item.getItemProperty("Update").setValue(updateButton);
             item.getItemProperty("Delete").setValue(deleteButton);
-
 
             updateButton.addClickListener(new Button.ClickListener() {
                 @Override
@@ -173,7 +183,6 @@ public class ContentFunctions extends VerticalLayout {
                 }
             });
         }
-        addComponent(contentTable);
     }
 
     public void updateContent(Content content) {
@@ -183,31 +192,48 @@ public class ContentFunctions extends VerticalLayout {
         contentLayout.setSizeUndefined();
         addComponent(contentLayout);
 
-        TextField contentName = new TextField("Content Name");
-        contentName.setValue(content.getName());
-        contentLayout.addComponent(contentName);
+        contentName = new TextField("Content Name");
+        contentName.setNullRepresentation("");
+        contentName.setSizeUndefined();
+        addComponent(contentName);
+        //contentLayout.addComponent(contentName);
 
-        RichTextArea contentText = new RichTextArea();
-        contentText.setValue(content.getData());
-        contentLayout.addComponent(contentText);
+        contentText = new RichTextArea();
+        contentText.setNullRepresentation("");
+        contentText.setSizeUndefined();
+        addComponent(contentText);
+        //contentLayout.addComponent(contentText);
 
         MyButton updateButton = new MyButton();
         updateButton.setIcon(FontAwesome.EDIT);
-        contentLayout.addComponent(updateButton);
+        addComponent(updateButton);
+        //contentLayout.addComponent(updateButton);
 
-        contentLayout.setComponentAlignment(updateButton, Alignment.MIDDLE_RIGHT);
-        setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
+        contentBeanItem = new BeanItem<Content>(content);
+        binder = new FieldGroup(contentBeanItem);
+        binder.bindMemberFields(this);
+        //binder.bindMemberFields(contentLayout);
+
+        setComponentAlignment(contentName, Alignment.TOP_CENTER);
+        setComponentAlignment(contentText, Alignment.TOP_CENTER);
+        setComponentAlignment(updateButton, Alignment.MIDDLE_RIGHT);
+
+        //contentLayout.setComponentAlignment(updateButton, Alignment.MIDDLE_RIGHT);
+       // setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
 
         updateButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 try {
-                    databaseService.updateContent(content, contentName, contentText);
+                    binder.commit();
+                    databaseService.updateContent(contentBeanItem.getBean());
                     Notification.show("Content updated");
                     listContents();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (FieldGroup.CommitException e) {
                     e.printStackTrace();
                 }
             }
@@ -227,6 +253,4 @@ public class ContentFunctions extends VerticalLayout {
         upload.addSucceededListener(receiver);
         uploadLayout.addComponent(upload);
     }
-
-
 }

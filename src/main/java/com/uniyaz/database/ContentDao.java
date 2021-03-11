@@ -1,14 +1,11 @@
 package com.uniyaz.database;
 
-import com.uniyaz.domain.Category;
 import com.uniyaz.domain.Content;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TextField;
 
 import javax.sql.rowset.serial.SerialBlob;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +35,12 @@ public class ContentDao {
         preparedStatement.setString(1, String.valueOf(content.getId()));
         preparedStatement.execute();
     }
-    public void updateContent(Content content, TextField contentName,RichTextArea richTextArea) throws SQLException, ClassNotFoundException {
+    public void updateContent(Content content) throws SQLException, ClassNotFoundException {
         connection = DatabaseConnection.getConnection();
         String sql = "UPDATE UNIVERSAL.CONTENT SET Name=?,Data=? WHERE ID= ?";
         preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, contentName.getValue());
-        preparedStatement.setString(2, richTextArea.getValue());
+        preparedStatement.setString(1, content.getName());
+        preparedStatement.setString(2, content.getData());
         preparedStatement.setString(3, String.valueOf(content.getId()));
         preparedStatement.execute();
     }

@@ -31,13 +31,13 @@ public class Content extends BaseDomain {
     }
 
     @Override
-    public void setName(String name) {
-        super.setName(name);
+    public int getId() {
+        return super.getId();
     }
 
     @Override
-    public int getId() {
-        return super.getId();
+    public void setName(String name) {
+        super.setName(name);
     }
 
     @Override
