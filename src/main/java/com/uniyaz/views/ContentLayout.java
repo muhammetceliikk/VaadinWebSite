@@ -30,7 +30,6 @@ public class ContentLayout extends VerticalLayout {
         welcome.setValue("Welcome");
         addComponent(welcome);
         setComponentAlignment(welcome,Alignment.TOP_CENTER);
-
     }
 
     public void ContentLayoutFillBy(String type) {
