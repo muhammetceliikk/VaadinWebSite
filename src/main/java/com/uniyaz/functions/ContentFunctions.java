@@ -173,7 +173,7 @@ public class ContentFunctions extends VerticalLayout {
                 public void buttonClick(Button.ClickEvent clickEvent) {
                     try {
                         databaseService.deleteContent(content);
-                        Notification.show("Content deleted");
+                        Notification.show(content.getName()+" deleted");
                         listContents();
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
@@ -195,31 +195,23 @@ public class ContentFunctions extends VerticalLayout {
         contentName = new TextField("Content Name");
         contentName.setNullRepresentation("");
         contentName.setSizeUndefined();
-        addComponent(contentName);
-        //contentLayout.addComponent(contentName);
+        contentLayout.addComponent(contentName);
 
         contentText = new RichTextArea();
         contentText.setNullRepresentation("");
         contentText.setSizeUndefined();
-        addComponent(contentText);
-        //contentLayout.addComponent(contentText);
+        contentLayout.addComponent(contentText);
 
         MyButton updateButton = new MyButton();
         updateButton.setIcon(FontAwesome.EDIT);
-        addComponent(updateButton);
-        //contentLayout.addComponent(updateButton);
+        contentLayout.addComponent(updateButton);
 
         contentBeanItem = new BeanItem<Content>(content);
         binder = new FieldGroup(contentBeanItem);
         binder.bindMemberFields(this);
-        //binder.bindMemberFields(contentLayout);
 
-        setComponentAlignment(contentName, Alignment.TOP_CENTER);
-        setComponentAlignment(contentText, Alignment.TOP_CENTER);
-        setComponentAlignment(updateButton, Alignment.MIDDLE_RIGHT);
-
-        //contentLayout.setComponentAlignment(updateButton, Alignment.MIDDLE_RIGHT);
-       // setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
+        contentLayout.setComponentAlignment(updateButton, Alignment.MIDDLE_RIGHT);
+        setComponentAlignment(contentLayout, Alignment.TOP_CENTER);
 
         updateButton.addClickListener(new Button.ClickListener() {
             @Override
@@ -227,7 +219,7 @@ public class ContentFunctions extends VerticalLayout {
                 try {
                     binder.commit();
                     databaseService.updateContent(contentBeanItem.getBean());
-                    Notification.show("Content updated");
+                    Notification.show(content.getName()+" updated");
                     listContents();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
